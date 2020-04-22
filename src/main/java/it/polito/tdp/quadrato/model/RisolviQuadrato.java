@@ -8,7 +8,78 @@ public class RisolviQuadrato {
 	private int N2 ; // numero di caselle (N^2)
 	private int magica ; // costante magica
 	
+	private List<List<Integer>> soluzioni;
 	
+	public RisolviQuadrato(int N) {
+		this.N=N;
+		this.N2=N*N;
+		this.magica=N*(N2+1)/2;
+	}
+	
+	
+	//calcola tutti i quadrati magici
+	//avvio ricorsione
+	public List<List<Integer>> quadrati() {
+		List<Integer> parziale= new ArrayList<>();
+		int livello=0;
+		
+		this.soluzioni=new ArrayList<List<Integer>>();
+		cerca(parziale, livello);
+		
+		return this.soluzioni;
+		
+	}
+	
+	
+	//procedura ricorsiva privata 
+	private void cerca(List<Integer> parziale, int livello) {
+		
+		//caso terminale con quadrato completo
+		if(livello==N2) {
+			if(controlla(parziale)) {
+				//quadrato è magico
+		   //System.out.println(parziale);
+				//riempio con la soluzione 
+			this.soluzioni.add(new ArrayList<>(parziale));
+				
+			}
+			return ;
+		}
+		
+		//controlli intermedi, quando il livello è multiplo di N(righe complete) 
+		
+		if(livello%N==0 && livello!=0) {
+			if(!controllaRiga(parziale,livello/N-1))
+				return ; //potatura dell'albero di ricerca
+		}
+		//caso intermedio
+		
+		//aggiungere valore alla casella che non è ancora stato usato 
+		for(int valore=1;valore<=N2; valore++) {
+			if(!parziale.contains(valore)) {
+				//prova valore 
+				parziale.add(valore);
+				cerca(parziale, livello+1);
+				parziale.remove(parziale.size()-1);
+		   } 
+			
+		}
+		
+		
+		
+	}
+	
+	
+	private boolean controllaRiga(List<Integer> parziale, int riga) {
+		// TODO Auto-generated method stub
+		int somma=0;
+		for(int col=0; col<N; col++) 
+			somma+= parziale.get(riga*N+col);
+			return somma==magica;
+	
+	}
+
+
 	/**
 	 * Verifica se una soluzione rispetta tutte le somme
 	 * @param parziale
